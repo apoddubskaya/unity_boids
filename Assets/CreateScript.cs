@@ -61,7 +61,7 @@ public class CreateScript : MonoBehaviour
             if (count == 0)
                 return Vector3.zero;
             centre /= count;
-            return (centre - previousCubes[numCube].position) / 50;
+            return (centre - previousCubes[numCube].position) / 30;
         }
 
         private Vector3 moveToSpeedCentreMass(int numCube, NativeArray<int> neighbors)
@@ -85,7 +85,6 @@ public class CreateScript : MonoBehaviour
         private Vector3 moveFromNeighbors(int numCube, NativeArray<int> neighbors)
         {
             Vector3 dist = Vector3.zero;
-            Debug.Log(neighbors.Length.ToString());
             for (int i = 0; i < neighbors.Length; i++)
             {
                 int idx = neighbors[i];
@@ -100,7 +99,7 @@ public class CreateScript : MonoBehaviour
 
         private Vector3 moveToPlace(int numCube)
         {
-            return (place - previousCubes[numCube].position);
+            return (place - previousCubes[numCube].position).normalized * 1.5f;
         }
 
         private Vector3 LimitSpeed(Vector3 speed, float limit)
@@ -145,13 +144,13 @@ public class CreateScript : MonoBehaviour
                             + moveToPlace(index);
             speed = LimitSpeed(speed, 3.5f);
 
-            if (Vector3.Distance(transform.position, place) <= 5.0f)
+            if (Vector3.Distance(transform.position, place) <= 10.0f)
             {
                 currentCubes[index] = new cubeInfo(false, previousCubes[index].position, Vector3.zero);
             }
             else
             {
-                transform.position += speed * deltaTime;
+                transform.position += speed * deltaTime * 5;
                 currentCubes[index] = new cubeInfo(true, transform.position, speed);
             }
 
@@ -164,7 +163,6 @@ public class CreateScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("nachalo\n");
         place = GameObject.Find("OptimizedTree").transform.position;
         cubes = new List<GameObject>();
         for (int i = 0; i < 200; i++)
